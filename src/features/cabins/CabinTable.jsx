@@ -15,17 +15,17 @@ const Table = styled.div`
 
 const TableHeader = styled.header`
   display: grid;
-  grid-template-columns: 1fr 2fr 2fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1.5fr 1fr;
   column-gap: 2.4rem;
   align-items: center;
-
+  padding: 1.4rem 2.4rem;
   background-color: var(--color-grey-50);
   border-bottom: 1px solid var(--color-grey-100);
   text-transform: uppercase;
   letter-spacing: 0.4px;
+  font-size: clamp(1rem, 1.5rem, 1.8rem);
   font-weight: 600;
   color: var(--color-grey-600);
-  padding: 1.6rem 2.4rem;
 `
 
 export default function CabinTable() {
@@ -47,7 +47,7 @@ export default function CabinTable() {
         <div>Cabin</div>
         <div>Capacity</div>
         <div>Price</div>
-        <div>Discount</div>
+        <div>Description</div>
         <div></div>
       </TableHeader>
       {cabins.map(c => (
