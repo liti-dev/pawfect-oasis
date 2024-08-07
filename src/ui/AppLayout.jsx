@@ -13,6 +13,12 @@ const StyledAppLayout = styled.div`
   grid-template-rows: auto 1fr;
   height: 100vh;
 `
+const Container = styled.div`
+  display: flex;
+  margin: 0 auto;
+  flex-direction: column;
+  gap: 3rem;
+`
 export default function AppLayout() {
   return (
     <>
@@ -21,7 +27,9 @@ export default function AppLayout() {
         <Sidebar />
 
         <Main>
-          <Outlet />
+          <Container>
+            <Outlet />
+          </Container>
         </Main>
       </StyledAppLayout>
     </>
