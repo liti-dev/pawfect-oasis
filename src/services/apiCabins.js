@@ -1,4 +1,4 @@
-import supabase from './supabase'
+import supabase, { supabaseUrl } from './supabase'
 
 export default async function getCabins() {
   const { data, error } = await supabase.from('cabins').select('*')
@@ -10,11 +10,26 @@ export default async function getCabins() {
 }
 
 export async function createCabin(cabin) {
-  const { data, error } = await supabase.from('cabins').insert([cabin]).select()
+  // What's the better way to name uploaded files?
+  const imageName = `cabin-${Math.random()}`
+  const imagePath = `${supabaseUrl}/storage/v1/object/public/cabin-images/${imageName}`
+
+  const { data, error } = await supabase
+    .from('cabins')
+    .insert([{ ...cabin, image: imagePath }])
+    .select()
   if (error) {
     console.error(error)
     throw new Error('Cabin could not be added')
   }
+  // Upload image
+
+  const { error: storageError } = await supabase.storage
+    .from('cabin-images')
+    .upload(imageName, cabin.image, {
+      cacheControl: '3600',
+      upsert: false,
+    })
   return data
 }
 
