@@ -4,6 +4,7 @@ import { capitaliseWords, formatCurrency } from '../../utils/helpers'
 import { deleteCabin } from '../../services/apiCabins'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
+import Button from '../../ui/Button'
 
 const TableRow = styled.div`
   display: grid;
@@ -64,9 +65,13 @@ export default function CabinRow({ cabin }) {
       <div>{cabin.maxCapacity}</div>
       <Price>{formatCurrency(cabin.regularPrice)}</Price>
       <Description>{cabin.description}</Description>
-      <button disabled={isLoading} onClick={() => mutate(cabin.id)}>
+      <Button
+        variation="danger"
+        disabled={isLoading}
+        onClick={() => mutate(cabin.id)}
+      >
         Delete
-      </button>
+      </Button>
     </TableRow>
   )
 }
