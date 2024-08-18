@@ -46,13 +46,17 @@ const Error = styled.span`
   color: var(--color-red-700);
 `
 
-function CreateCabinForm() {
+function CreateCabinForm({ cabinToEdit = {} }) {
+  const { id: editId, ...editValues } = cabinToEdit
+
+  // If there's an id, the form show EditCabinForm with default values. No id then show CreateCabinForm
+  const isEdit = Boolean(editId)
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm()
+  } = useForm({ defaultValues: isEdit ? editValues : {} })
 
   const QueryClient = useQueryClient()
   const { isLoading, mutate } = useMutation({
@@ -68,9 +72,23 @@ function CreateCabinForm() {
     onError: err => toast.error(err.message, 'Cabin could not be added'),
   })
 
+  const { isLoading: isEditing, mutate: editCabin } = useMutation({
+    mutationFn: ({ cabin, id }) => createCabin(cabin, id),
+    onSuccess: () => {
+      toast.success('Cabin sucessfully edited')
+      QueryClient.invalidateQueries({
+        queryKey: ['cabins'],
+      })
+    },
+    onError: err => toast.error(err.message, 'Cabin could not be edited'),
+  })
+
   function onSubmit(data) {
     console.log('data', data)
-    mutate({ ...data, image: data.image[0] })
+    const image = typeof data.image === 'string' ? data.image : data.image[0]
+    if (isEdit) {
+      editCabin({ cabin: { ...data, image }, id: editId })
+    } else createCabin({ ...data, image: image })
   }
 
   function onError(err) {
@@ -139,7 +157,9 @@ function CreateCabinForm() {
         <Button variation="secondary" type="reset">
           Cancel
         </Button>
-        <Button disable={isLoading}>Add cabin</Button>
+        <Button disable={isLoading}>
+          {isEdit ? 'Edit cabin' : 'Create new cabin'}
+        </Button>
       </FormRow>
     </Form>
   )

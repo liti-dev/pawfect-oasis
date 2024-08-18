@@ -15,7 +15,7 @@ const Table = styled.div`
 
 const TableHeader = styled.header`
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1.5fr 1fr;
+  grid-template-columns: 1fr 1fr 0.7fr 0.7fr 1.5fr 2fr;
   column-gap: 2.4rem;
   align-items: center;
   padding: 1.4rem 2.4rem;
