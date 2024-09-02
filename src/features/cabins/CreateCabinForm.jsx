@@ -8,11 +8,9 @@ import Form from '../../ui/Form'
 import Button from '../../ui/Button'
 import FileInput from '../../ui/FileInput'
 import Textarea from '../../ui/Textarea'
-import {FormRow, Error, Label} from "../../ui/FormRow"
+import { FormRow, Error, Label } from '../../ui/FormRow'
 
-
-
-function CreateCabinForm({ cabinToEdit = {} }) {
+function CreateCabinForm({ cabinToEdit = {}, onClose }) {
   const { id: editId, ...editValues } = cabinToEdit
 
   // If there's an id, the form show EditCabinForm with default values. No id then show CreateCabinForm
@@ -50,7 +48,7 @@ function CreateCabinForm({ cabinToEdit = {} }) {
   })
 
   function onSubmit(data) {
-    console.log('data', data)
+    // console.log('data', data)
     const image = typeof data.image === 'string' ? data.image : data.image[0]
     if (isEdit) {
       editCabin({ cabin: { ...data, image }, id: editId })
@@ -104,9 +102,9 @@ function CreateCabinForm({ cabinToEdit = {} }) {
       </FormRow>
 
       <FormRow>
-        <Label htmlFor="description">Description for website</Label>
+        <Label htmlFor="description">Description</Label>
         <Textarea
-          type="number"
+          type="text"
           id="description"
           defaultValue=""
           {...register('description')}
@@ -120,10 +118,10 @@ function CreateCabinForm({ cabinToEdit = {} }) {
 
       <FormRow>
         {/* type is an HTML attribute! */}
-        <Button variation="secondary" type="reset">
+        <Button variation="secondary" type="reset" onClick={onClose}>
           Cancel
         </Button>
-        <Button disable={isLoading}>
+        <Button disable={isLoading} onClick={onClose}>
           {isEdit ? 'Edit cabin' : 'Create new cabin'}
         </Button>
       </FormRow>

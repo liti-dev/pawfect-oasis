@@ -4,9 +4,10 @@ import Row from '../ui/Row'
 import CabinTable from '../features/cabins/CabinTable'
 import CreateCabinForm from '../features/cabins/CreateCabinForm'
 import Button from '../ui/Button'
+import Modal from '../ui/Modal'
 
 function Cabins() {
-  const [showForm, setShowForm] = useState(false)
+  const [showModal, setShowModal] = useState(false)
   return (
     <>
       <Row type="horizontal">
@@ -16,10 +17,14 @@ function Cabins() {
       <Row>
         <CabinTable />
       </Row>
-      <Button onClick={() => setShowForm(!showForm)}>
-        {showForm ? 'Close form' : 'Add new cabin'}
+      <Button onClick={() => setShowModal(!showModal)}>
+        {showModal ? 'Close form' : 'Add new cabin'}
       </Button>
-      {showForm && <CreateCabinForm />}
+      {showModal && (
+        <Modal onClose={() => setShowModal(false)}>
+          <CreateCabinForm onClose={() => setShowModal(false)} />
+        </Modal>
+      )}
     </>
   )
 }
