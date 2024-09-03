@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form'
-import { createCabin } from '../../services/apiCabins'
+import { createCabin as createEditCabin } from '../../services/apiCabins'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
 
@@ -23,8 +23,8 @@ function CreateCabinForm({ cabinToEdit = {} }) {
   } = useForm({ defaultValues: isEdit ? editValues : {} })
 
   const QueryClient = useQueryClient()
-  const { isLoading, mutate } = useMutation({
-    mutationFn: createCabin,
+  const { isLoading: isCreating, mutate: createCabin } = useMutation({
+    mutationFn: createEditCabin,
     onSuccess: () => {
       toast.success('Cabin added sucessfully')
       QueryClient.invalidateQueries({
@@ -37,7 +37,7 @@ function CreateCabinForm({ cabinToEdit = {} }) {
   })
 
   const { isLoading: isEditing, mutate: editCabin } = useMutation({
-    mutationFn: ({ cabin, id }) => createCabin(cabin, id),
+    mutationFn: ({ cabin, id }) => createEditCabin(cabin, id),
     onSuccess: () => {
       toast.success('Cabin sucessfully edited')
       QueryClient.invalidateQueries({
@@ -47,8 +47,9 @@ function CreateCabinForm({ cabinToEdit = {} }) {
     onError: err => toast.error(err.message, 'Cabin could not be edited'),
   })
 
+  const isWorking = isCreating || isEditing
+
   function onSubmit(data) {
-    // console.log('data', data)
     const image = typeof data.image === 'string' ? data.image : data.image[0]
     if (isEdit) {
       editCabin({ cabin: { ...data, image }, id: editId })
@@ -113,7 +114,13 @@ function CreateCabinForm({ cabinToEdit = {} }) {
 
       <FormRow>
         <Label htmlFor="image">Cabin photo</Label>
-        <FileInput id="image" accept="image/*" {...register('image')} />
+        <FileInput
+          id="image"
+          accept="image/*"
+          {...register('image', {
+            required: isEdit ? false : 'Image is required',
+          })}
+        />
       </FormRow>
 
       <FormRow>
@@ -121,7 +128,7 @@ function CreateCabinForm({ cabinToEdit = {} }) {
         <Button variation="secondary" type="reset">
           Cancel
         </Button>
-        <Button disable={isLoading}>
+        <Button disable={isWorking}>
           {isEdit ? 'Edit cabin' : 'Create new cabin'}
         </Button>
       </FormRow>

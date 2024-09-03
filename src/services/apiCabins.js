@@ -10,10 +10,12 @@ export default async function getCabins() {
 }
 
 export async function createCabin(cabin, id) {
-  console.log('cabin', cabin, id)
+  console.log('cabin', cabin, 'id', id)
   // Check if image has path
-  const hasImagePath = cabin.image?.startsWith(supabaseUrl)
-  console.log(hasImagePath)
+  console.log(supabaseUrl)
+  // const hasImagePath = cabin.image?.startsWith(supabaseUrl)
+  const hasImagePath = typeof cabin.image === 'string'
+  // console.log(hasImagePath)
 
   const imageName = `cabin-${Date.now()}`
   const imagePath = hasImagePath
@@ -46,6 +48,9 @@ export async function createCabin(cabin, id) {
       cacheControl: '3600',
       upsert: false,
     })
+  if (storageError) {
+    throw new Error('Image could not be uploaded')
+  }
   return data
 }
 

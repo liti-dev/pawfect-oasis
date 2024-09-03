@@ -4,7 +4,6 @@ import Row from '../ui/Row'
 import CabinTable from '../features/cabins/CabinTable'
 import CreateCabinForm from '../features/cabins/CreateCabinForm'
 import Button from '../ui/Button'
-import Modal from '../ui/Modal'
 
 function Cabins() {
   const [showModal, setShowModal] = useState(false)
