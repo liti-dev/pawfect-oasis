@@ -13,7 +13,8 @@ export async function createCabin(cabin, id) {
   console.log('cabin', cabin, id)
   // Check if image has path
   const hasImagePath = cabin.image?.startsWith(supabaseUrl)
-  // What's the better way to name uploaded files?
+  console.log(hasImagePath)
+
   const imageName = `cabin-${Date.now()}`
   const imagePath = hasImagePath
     ? cabin.image
@@ -34,7 +35,6 @@ export async function createCabin(cabin, id) {
   }
 
   const { data, error } = await query.select().single()
-
   if (error) {
     console.error(error)
     throw new Error('Cabin could not be added')

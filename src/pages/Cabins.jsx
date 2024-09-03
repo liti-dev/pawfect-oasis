@@ -20,11 +20,12 @@ function Cabins() {
       <Button onClick={() => setShowModal(!showModal)}>
         {showModal ? 'Close form' : 'Add new cabin'}
       </Button>
-      {showModal && (
+      {/* {showModal && (
         <Modal onClose={() => setShowModal(false)}>
           <CreateCabinForm onClose={() => setShowModal(false)} />
         </Modal>
-      )}
+      )} */}
+      {showModal && <CreateCabinForm />}
     </>
   )
 }

@@ -10,7 +10,7 @@ import FileInput from '../../ui/FileInput'
 import Textarea from '../../ui/Textarea'
 import { FormRow, Error, Label } from '../../ui/FormRow'
 
-function CreateCabinForm({ cabinToEdit = {}, onClose }) {
+function CreateCabinForm({ cabinToEdit = {} }) {
   const { id: editId, ...editValues } = cabinToEdit
 
   // If there's an id, the form show EditCabinForm with default values. No id then show CreateCabinForm
@@ -118,10 +118,10 @@ function CreateCabinForm({ cabinToEdit = {}, onClose }) {
 
       <FormRow>
         {/* type is an HTML attribute! */}
-        <Button variation="secondary" type="reset" onClick={onClose}>
+        <Button variation="secondary" type="reset">
           Cancel
         </Button>
-        <Button disable={isLoading} onClick={onClose}>
+        <Button disable={isLoading}>
           {isEdit ? 'Edit cabin' : 'Create new cabin'}
         </Button>
       </FormRow>
