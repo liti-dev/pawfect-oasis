@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form'
-import { createCabin } from '../../services/apiCabins'
+import { createSuite as createEditSuite } from '../../services/apiSuites'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
 
@@ -10,10 +10,10 @@ import FileInput from '../../ui/FileInput'
 import Textarea from '../../ui/Textarea'
 import { FormRow, Error, Label } from '../../ui/FormRow'
 
-function CreateCabinForm({ cabinToEdit = {}, onClose }) {
-  const { id: editId, ...editValues } = cabinToEdit
+function CreateSuiteForm({ suiteToEdit = {}, onClose }) {
+  const { id: editId, ...editValues } = suiteToEdit
 
-  // If there's an id, the form show EditCabinForm with default values. No id then show CreateCabinForm
+  // If there's an id, the form show EditSuiteForm with default values. No id then show CreateSuiteForm
   const isEdit = Boolean(editId)
   const {
     register,
@@ -23,36 +23,39 @@ function CreateCabinForm({ cabinToEdit = {}, onClose }) {
   } = useForm({ defaultValues: isEdit ? editValues : {} })
 
   const QueryClient = useQueryClient()
-  const { isLoading, mutate } = useMutation({
-    mutationFn: createCabin,
+  const { isLoading: isCreating, mutate: createSuite } = useMutation({
+    mutationFn: createEditSuite,
     onSuccess: () => {
-      toast.success('Cabin added sucessfully')
+      toast.success('suite added sucessfully')
       QueryClient.invalidateQueries({
-        queryKey: ['cabins'],
+        queryKey: ['suites'],
       })
       // reset if mutation is successful. That's why we don't add reset to onSubmit func
       reset()
+      onClose()
     },
-    onError: err => toast.error(err.message, 'Cabin could not be added'),
+    onError: err => toast.error(err.message, 'suite could not be added'),
   })
 
-  const { isLoading: isEditing, mutate: editCabin } = useMutation({
-    mutationFn: ({ cabin, id }) => createCabin(cabin, id),
+  const { isLoading: isEditing, mutate: editSuite } = useMutation({
+    mutationFn: ({ suite, id }) => createEditSuite(suite, id),
     onSuccess: () => {
-      toast.success('Cabin sucessfully edited')
+      toast.success('suite sucessfully edited')
       QueryClient.invalidateQueries({
-        queryKey: ['cabins'],
+        queryKey: ['suites'],
       })
+      onClose()
     },
-    onError: err => toast.error(err.message, 'Cabin could not be edited'),
+    onError: err => toast.error(err.message, 'suite could not be edited'),
   })
+
+  const isWorking = isCreating || isEditing
 
   function onSubmit(data) {
-    // console.log('data', data)
     const image = typeof data.image === 'string' ? data.image : data.image[0]
     if (isEdit) {
-      editCabin({ cabin: { ...data, image }, id: editId })
-    } else createCabin({ ...data, image: image })
+      editSuite({ suite: { ...data, image }, id: editId })
+    } else createSuite({ ...data, image: image })
   }
 
   function onError(err) {
@@ -62,12 +65,12 @@ function CreateCabinForm({ cabinToEdit = {}, onClose }) {
   return (
     <Form onSubmit={handleSubmit(onSubmit, onError)}>
       <FormRow>
-        <Label htmlFor="name">Cabin name</Label>
+        <Label htmlFor="name">Suite name</Label>
         <Input
           type="text"
           id="name"
           {...register('name', {
-            required: 'Cabin name is required',
+            required: 'suite name is required',
             maxLength: 30,
           })}
         />
@@ -80,7 +83,7 @@ function CreateCabinForm({ cabinToEdit = {}, onClose }) {
           type="number"
           id="maxCapacity"
           {...register('maxCapacity', {
-            required: 'Cabin capacity is required',
+            required: 'suite capacity is required',
             min: { value: 1, message: 'Capacity must be at least 1' },
             max: { value: 10, message: 'Capacity cannot exceed 10' },
           })}
@@ -94,7 +97,7 @@ function CreateCabinForm({ cabinToEdit = {}, onClose }) {
           type="number"
           id="regularPrice"
           {...register('regularPrice', {
-            required: 'Cabin price is required',
+            required: 'suite price is required',
             min: { value: 1, message: 'Price must be at least 1' },
           })}
         />
@@ -112,8 +115,14 @@ function CreateCabinForm({ cabinToEdit = {}, onClose }) {
       </FormRow>
 
       <FormRow>
-        <Label htmlFor="image">Cabin photo</Label>
-        <FileInput id="image" accept="image/*" {...register('image')} />
+        <Label htmlFor="image">Suite image</Label>
+        <FileInput
+          id="image"
+          accept="image/*"
+          {...register('image', {
+            required: isEdit ? false : 'Image is required',
+          })}
+        />
       </FormRow>
 
       <FormRow>
@@ -121,12 +130,12 @@ function CreateCabinForm({ cabinToEdit = {}, onClose }) {
         <Button variation="secondary" type="reset" onClick={onClose}>
           Cancel
         </Button>
-        <Button disable={isLoading} onClick={onClose}>
-          {isEdit ? 'Edit cabin' : 'Create new cabin'}
+        <Button disable={isWorking} type="submit">
+          {isEdit ? 'Edit suite' : 'Create new suite'}
         </Button>
       </FormRow>
     </Form>
   )
 }
 
-export default CreateCabinForm
+export default CreateSuiteForm

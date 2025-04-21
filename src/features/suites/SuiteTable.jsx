@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query'
 import styled from 'styled-components'
-import getCabins from '../../services/apiCabins'
+import getSuites from '../../services/apiSuites'
 import Spinner from '../../ui/Spinner'
-import CabinRow from './CabinRow'
+import SuiteRow from './SuiteRow'
 
 const Table = styled.div`
   border: 1px solid var(--color-grey-200);
@@ -28,30 +28,33 @@ const TableHeader = styled.header`
   color: var(--color-grey-600);
 `
 
-export default function CabinTable() {
+export default function SuiteTable() {
   const {
     isLoading,
-    data: cabins,
+    data: suites,
     error,
   } = useQuery({
-    queryKey: ['cabins'],
-    queryFn: getCabins,
+    queryKey: ['suites'],
+    queryFn: getSuites,
   })
-  // console.log(cabins, error)
+  // console.log(suites, error)
   if (isLoading) return <Spinner />
+  if (error) {
+    console.error('Error fetching settings:', error)
+  }
 
   return (
     <Table role="table">
       <TableHeader>
         <div></div>
-        <div>Cabin</div>
+        <div>Suite</div>
         <div>Capacity</div>
         <div>Price</div>
         <div>Description</div>
         <div></div>
       </TableHeader>
-      {cabins.map(c => (
-        <CabinRow cabin={c} key={c.id} />
+      {suites.map(s => (
+        <SuiteRow suite={s} key={s.id} />
       ))}
     </Table>
   )

@@ -6,7 +6,7 @@
 
 Pawfect Oasis is a cosy and eco-friendly hotel for pets with 4 cabins, providing a home-from-home to your furry companions.
 
-- They first need an internal app to manage bookings, cabins and guests.
+- They need an internal app to manage bookings, cabins and guests.
 - They need an API.
 - Later they will need a website where customers can book stays.
 

@@ -16,7 +16,7 @@ function UpdateSettingsForm() {
     data: settings = {},
     error,
   } = useQuery({ queryKey: ['settings'], queryFn: getSettings })
-  const { minNights, maxNights, maxGuests, groomingPrice, mealPrice } = settings
+  const { minNights, maxNights, groomingPrice, mealPrice } = settings
 
   const { isLoading: isUpdating, mutate: updateSetting } = useMutation({
     mutationFn: updateSettingApi,
@@ -30,6 +30,9 @@ function UpdateSettingsForm() {
   })
 
   if (isLoading) return <Spinner />
+  if (error) {
+    console.error('Error fetching settings:', error)
+  }
 
   function handleUpdate(e) {
     const { value, id: field } = e.target
@@ -56,16 +59,6 @@ function UpdateSettingsForm() {
           type="number"
           id="maxNights"
           defaultValue={maxNights}
-          disabled={isUpdating}
-          onBlur={e => handleUpdate(e)}
-        />
-      </FormRow>
-      <FormRow label="Maximum guests">
-        <Label htmlFor="maxGuests">Max guests per booking</Label>
-        <Input
-          type="number"
-          id="maxGuests"
-          defaultValue={maxGuests}
           disabled={isUpdating}
           onBlur={e => handleUpdate(e)}
         />

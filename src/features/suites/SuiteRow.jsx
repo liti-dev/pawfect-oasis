@@ -2,11 +2,14 @@ import { useState } from 'react'
 import styled from 'styled-components'
 
 import { capitaliseWords, formatCurrency } from '../../utils/helpers'
-import { deleteCabin } from '../../services/apiCabins'
+import { deleteSuite } from '../../services/apiSuites'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
 import Button from '../../ui/Button'
-import CreateCabinForm from '../cabins/CreateCabinForm'
+import CreateSuiteForm from '../suites/CreateSuiteForm'
+import { RiDeleteBinLine } from 'react-icons/ri'
+import Modal from '../../ui/Modal'
+import ConfirmDelete from '../../ui/ConfirmDelete'
 
 const TableRow = styled.div`
   display: grid;
@@ -28,7 +31,7 @@ const Img = styled.img`
   object-position: center;
 `
 
-const Cabin = styled.div`
+const Suite = styled.div`
   font-size: 1.6rem;
   font-weight: 600;
   color: var(--color-grey-600);
@@ -53,43 +56,62 @@ const Container = styled.div`
   gap: 1rem;
 `
 
-export default function CabinRow({ cabin }) {
+export default function SuiteRow({ suite }) {
   const [showEditForm, setShowEditForm] = useState(false)
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false)
+
   const QueryClient = useQueryClient()
   const { isLoading, mutate } = useMutation({
-    mutationFn: deleteCabin,
+    mutationFn: deleteSuite,
     onSuccess: () => {
-      toast.success('Delete cabin sucessfully')
+      toast.success('Delete suite sucessfully')
       QueryClient.invalidateQueries({
-        queryKey: ['cabins'],
+        queryKey: ['suites'],
       })
     },
-    onError: err => toast.error(err.message, 'Cabin could not be deleted'),
+    onError: err => toast.error(err.message, 'suite could not be deleted'),
   })
 
   return (
     <>
       <TableRow role="row">
-        <Img src={cabin.image} alt="cabin" />
-        <Cabin>{capitaliseWords(cabin.name)}</Cabin>
-        <div>{cabin.maxCapacity}</div>
-        <Price>{formatCurrency(cabin.regularPrice)}</Price>
+        <Img src={suite.image} alt="suite" />
+        <Suite>{capitaliseWords(suite.name)}</Suite>
+        <div>{suite.maxCapacity}</div>
+        <Price>{formatCurrency(suite.regularPrice)}</Price>
         <Description>
-          {cabin.description.charAt(0).toUpperCase() +
-            cabin.description.slice(1)}
+          {suite.description.charAt(0).toUpperCase() +
+            suite.description.slice(1)}
         </Description>
         <Container>
           <Button onClick={() => setShowEditForm(show => !show)}>Edit</Button>
           <Button
             variation="danger"
             disabled={isLoading}
-            onClick={() => mutate(cabin.id)}
+            // onClick={() => mutate(suite.id)}
+            onClick={() => setShowConfirmDelete(true)}
           >
-            Delete
+            <RiDeleteBinLine />
           </Button>
         </Container>
       </TableRow>
-      {showEditForm && <CreateCabinForm cabinToEdit={cabin} />}
+      {/* {showEditForm && <CreateSuiteForm suiteToEdit={suite} />} */}
+      {showEditForm && (
+        <Modal onClose={() => setShowEditForm(false)}>
+          <CreateSuiteForm
+            onClose={() => setShowEditForm(false)}
+            suiteToEdit={suite}
+          />
+        </Modal>
+      )}
+      {showConfirmDelete && (
+        <Modal onClose={() => setShowConfirmDelete(false)}>
+          <ConfirmDelete
+            onClose={() => setShowConfirmDelete(false)}
+            onConfirm={() => mutate(suite.id)}
+          />
+        </Modal>
+      )}
     </>
   )
 }
