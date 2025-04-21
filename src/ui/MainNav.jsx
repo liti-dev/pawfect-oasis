@@ -71,9 +71,9 @@ export default function MainNav() {
           </StyledNavLink>
         </li>
         <li>
-          <StyledNavLink to="/cabins">
+          <StyledNavLink to="/suites">
             <HiOutlineHomeModern />
-            Cabins
+            Suites
           </StyledNavLink>
         </li>
         <li>
