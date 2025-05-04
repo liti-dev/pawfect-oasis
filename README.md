@@ -1,4 +1,5 @@
 # Pawfect Oasis
+![image](https://github.com/user-attachments/assets/3e1007e7-6c2a-4264-8a87-2ecc67a58a34)
 
 ## Demo
 
