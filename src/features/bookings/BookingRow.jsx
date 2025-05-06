@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import { format, isToday } from 'date-fns'
+import { capitaliseWords } from '../../utils/helpers'
 
 import Tag from '../../ui/Tag'
 import Table from '../../ui/Table'
@@ -58,13 +59,13 @@ function BookingRow({
   return (
     <Table.Row>
       {/* <div>{bookingId}</div> */}
-      <Cabin>{suiteName}</Cabin>
+      <Cabin>{capitaliseWords(suiteName)}</Cabin>
 
       <Stacked>
-        <span>{guestName}</span>
+        <span>{capitaliseWords(guestName)}</span>
         <span>{email}</span>
       </Stacked>
-      {/* <div>{numPets > 1 ? `${numPets} pets` : `${numPets} pet`}</div> */}
+      <div>{numPets > 1 ? `${numPets} pets` : `${numPets} pet`}</div>
 
       <Stacked>
         <span>
