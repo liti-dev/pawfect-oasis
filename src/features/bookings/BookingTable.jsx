@@ -1,11 +1,17 @@
 import { useQuery } from '@tanstack/react-query'
+import { useSearchParams } from 'react-router-dom'
+
 import { getBookings } from '../../services/apiBookings'
+
 import BookingRow from './BookingRow'
 import Table from '../../ui/Table'
 import Menus from '../../ui/Menus'
 import Spinner from '../../ui/Spinner'
 
 function BookingTable() {
+  const [searchParams] = useSearchParams()
+  const selectedStatus = searchParams.get('status') || 'all'
+
   const {
     isLoading,
     data: bookings,
@@ -22,19 +28,25 @@ function BookingTable() {
     console.error('Error fetching bookings:', error)
   }
 
+  const filteredBookings =
+    selectedStatus === 'all'
+      ? bookings
+      : bookings.filter(b => b.status === selectedStatus)
+
   return (
     <Menus>
-      <Table columns="0.6fr 2fr 2.4fr 1.4fr 1fr 3.2rem">
+      <Table columns="1.5fr 2fr 1.5fr 2.5fr 1.5fr 1fr">
         <Table.Header>
-          <div>Cabin</div>
+          <div>Suite</div>
           <div>Guest</div>
+          <div>Num of Pets</div>
           <div>Dates</div>
           <div>Status</div>
           <div>Amount</div>
         </Table.Header>
 
         <Table.Body
-          data={bookings}
+          data={filteredBookings}
           render={booking => <BookingRow key={booking.id} booking={booking} />}
         />
       </Table>
