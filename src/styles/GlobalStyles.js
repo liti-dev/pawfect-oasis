@@ -146,9 +146,9 @@ img {
   filter: grayscale(var(--image-grayscale)) opacity(var(--image-opacity));
 }
 
-/*
-FOR DARK MODE
 
+/* DARK MODE */
+body.dark-mode {
 --color-grey-0: #18212f;
 --color-grey-50: #111827;
 --color-grey-100: #1f2937;
@@ -184,7 +184,6 @@ FOR DARK MODE
 
 --image-grayscale: 10%;
 --image-opacity: 90%;
-*/
-
+}
 `
 export default GlobalStyles
